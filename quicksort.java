@@ -1,92 +1,105 @@
-import java.util.Scanner;
-public class quicksort {
-public static String[] theArray;
-public static void main(String[]args){
-    Scanner scan = new Scanner(System.in);
-    int num = Integer.parseInt(scan.nextLine());
-    theArray = new String[num];
-    for(int i=0;i<num;i++){
-        theArray[i]=scan.nextLine();
+package quicksort;
+import java.util.*;
+public class quicksort{
+
+    public static String[] myarray;
+
+    public static void main(String[] args){
+
+        Scanner myscanner = new Scanner(System.in);
+        int num = Integer.parseInt(myscanner.nextLine());
+        String[] array = new String[num];
+        myarray = new String[num];
+        for(int i=0;i<num;i++){
+            myarray[i]=myscanner.nextLine();
+        }
+
+        recQuickSort(myarray);
+
+        for(int i=0;i<num;i++){
+            System.out.println(myarray[i]);
+        }
     }
 
-    recQuickSort(theArray,0,theArray.length-1);
-
-    for(int i=0;i<num;i++){
-        System.out.println(theArray[i]);
+    public static void recQuickSort(String arr[]){
+        recQuickSort(arr, 0, arr.length-1);
     }
-}
 
+     //This will execute the quick sort
+     public static void recQuickSort(String arr[], int left, int right){
+	//base case
+	if(left >= right)
+		return;
 
-public static void recQuickSort(String array[], int left, int right) {
+	//Pivot is rightmost element in the array
+	int pivot = right;
+	int rightScan = right-1;
+	int leftScan = left;
 
-	 if(right-left <= 0)
-	 return;
+	while(leftScan < pivot && rightScan >= 0){
+		if(leftScan == rightScan){
+			if(compare(arr[leftScan], arr[pivot]))
+				swap(arr, leftScan, pivot);
+			break;
+		}
 
-	 else{
-	 String pivot = theArray[right];
-	 int partition = partitionIt(left, right, pivot);
-	 recQuickSort(array,left, partition-1);
-	 recQuickSort(array,partition+1, right);
-  }
-}
+		if(leftScan > rightScan){
+			swap(arr, leftScan, pivot);
+			break;
+		}
 
-public static int partitionIt(int left, int right, String pivot){
+		if(compare(arr[leftScan], arr[pivot]) && !compare(arr[rightScan], arr[pivot])){
+			swap(arr, leftScan, rightScan);
+			leftScan++;
+			rightScan--;
+		}
 
-	 int leftPtr = left-1;
-	 int rightPtr = right;
-	 while(true)
-	 {
-	 while(compareTo(theArray[++leftPtr], pivot )){}
-	 while(compareTo(theArray[--rightPtr],pivot)){}
+		else if(compare(arr[leftScan], arr[pivot]))
+			rightScan--;
 
+		else if(!compare(arr[rightScan], arr[pivot]))
+			leftScan++;
 
-	 if(leftPtr >= rightPtr)
-	 break;
-	 else
-	 swap(theArray,leftPtr, rightPtr);
-	 }
-	 swap(theArray,leftPtr, right);
-	 return leftPtr;
-	}
-
-public static void swap(String arr[], int one, int two){
-	String temp = arr[one];
-	arr[one] = arr[two];
-	arr[two] = temp;
-}
-
-public static boolean compareTo(String a, String b){
-	char charA = getGreatest(a);
-	char charB = getGreatest(b);
-	if(charA>charB)
-	{
-		return true;
-	}
-
-	else if(charA<charB)
-	{
-		return false;
-	}
-
-	if(a.compareTo(b)>0)
-	{
-		return true;
-	}
-return false;
-}
-
-
-public static char getGreatest(String x){
-	if(x.length()==0){
-		return 'x';
-	}
-	char biggest = x.charAt(0);
-	for(int i =1; i<x.length(); i++){
-		char current = x.charAt(i);
-		if(current>biggest){
-			biggest =current;
+		else{
+			leftScan++;
+			rightScan--;
 		}
 	}
-	return biggest;
-}
+	recQuickSort(arr, left, rightScan);
+	recQuickSort(arr, leftScan+1, right);
+    }
+
+    //This method will find out which string should come first in the sorted array
+    public static boolean compare(String one, String two){
+        char temp1[] = one.toCharArray();
+        char temp2[] = two.toCharArray();
+
+	//Sorting both strings will mean the letter furthest along
+	//in the alphabet will be the last entry in the char array
+        Arrays.sort(temp1);
+        Arrays.sort(temp2);
+
+	//Only compares the two strings letters which are latest in the alphabet
+	//If string one has a letter later in the alphabet then it comes earlier in sorted array
+        if(temp1[temp1.length-1] > temp2[temp2.length-1])
+            return true;
+
+	//If string one has a letter earlier in the alphabet then it comes later in sorted array
+        else if(temp1[temp1.length-1] < temp2[temp2.length-1])
+            return false;
+
+	//If both strings have same latest letter then sort alphabetically
+        else{
+            if(one.compareTo(two) > 0)
+                return true;
+            else
+                return false;
+        }
+    }
+
+    public static void swap(String arr[], int one, int two){
+		String temp = arr[one];
+		arr[one] = arr[two];
+		arr[two] = temp;
+	}
 }
